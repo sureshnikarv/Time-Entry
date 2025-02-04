@@ -122,7 +122,7 @@ export default function TimeEntry() {
   const [timeentriesOpen, settimeentriesOpen] = useState(false);
   const [timeentriesMessage, settimeentriesMessage] = useState("");
   const [timeentriesSeverity, settimeentriesSeverity] = useState("success");
-  const [tabValue, setTabValue] = useState(1); // Set to 1 for the week page
+  const [tabValue, setTabValue] = useState(1); 
   const [timeEntries, setTimeEntries] = useState({});
   const [activeDay, setActiveDay] = useState(null);
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
@@ -238,12 +238,10 @@ export default function TimeEntry() {
     };
     setTaskMinutes(updatedMinutes);
   
-    // Convert day to date
     const dayDate = new Date(currentWeekStart);
     dayDate.setDate(currentWeekStart.getDate() + daysOfWeek.indexOf(day));
     const formattedDate = dayjs(dayDate).format("YYYY-MM-DD");
   
-    // Prepare the data for submission
     const timeEntryData = {
       data: {
         Date: formattedDate,
@@ -269,13 +267,11 @@ export default function TimeEntry() {
     };
   
     try {
-      // Check if an entry already exists for the task and date
       const existingEntry = storedTimeEntries.find(entry => 
         entry.task.documentId === taskId && entry.Date === formattedDate
       );
   
       if (existingEntry) {
-        // Update existing entry
         await axios.put(`http://localhost:1337/api/time-entries/${existingEntry.id}`, timeEntryData, {
           headers: {
             Authorization: "YOUR_AUTH_TOKEN_HERE",
@@ -334,6 +330,11 @@ export default function TimeEntry() {
 
     const totalMinutes = filteredEntries.reduce((total, entry) => total + entry.Minutes, 0);
     return formatMinutesToTime(totalMinutes);
+  };
+  const formatMinutesToTime = (totalMinutes) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}h:${minutes.toString().padStart(2, '0')}m`;
   };
 
   const handleSubmit = async () => {
